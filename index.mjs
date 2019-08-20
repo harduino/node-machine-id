@@ -22,7 +22,7 @@ function isWindowsProcessMixedOrNativeArchitecture() {
     if(process.platform !== 'win32') {
         return '';
     }
-    if( process.arch === 'ia32' && process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432') ) {
+    if( process.arch === 'ia32' && Object.prototype.hasOwnProperty.call(process.env, 'PROCESSOR_ARCHITEW6432') ) {
         return 'mixed';
     }
     return 'native';
@@ -37,7 +37,7 @@ function expose(result) {
         case 'darwin':
             return result
                 .split('IOPlatformUUID')[1]
-                .split('\n')[0].replace(/\=|\s+|\"/ig, '')
+                .split('\n')[0].replace(/=|\s+|"/ig, '')
                 .toLowerCase();
         case 'win32':
             return result
@@ -67,7 +67,7 @@ export function machineIdSync(original) {
 
 export function machineId(original) {
     return new Promise((resolve, reject) => {
-        return exec(guid[platform], {}, (err, stdout, stderr) => {
+        return exec(guid[platform], {}, (err, stdout) => {
             if (err) {
                 return reject(
                     new Error(`Error while obtaining machine id: ${err.stack}`)
